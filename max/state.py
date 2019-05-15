@@ -55,26 +55,21 @@ class State:
     
     def update(self, colour, action):
         """
-        Update the board state.
+        Update the board state according to the action of the player with the 
+        specified colour.
         """
-        # print("Colour: " + colour)
-        # print(self.piece_locs)
         (move, cells) = action
-        if (move == MOVE):
-            (origin, dest) = cells
-            self.piece_locs[colour].remove(origin)
-            self.piece_locs[colour].append(dest)
-
-        if (move == JUMP):
+        if (move == MOVE or move == JUMP):
             (origin, dest) = cells
 
-            # Convert the captured piece to another colour accordingly
-            middle_cell = tuple(map(lambda x, y: (x + y) // 2, origin, dest))
-            for (piece_colour, pieces) in self.piece_locs.items():
-                if (middle_cell in pieces):
-                    self.piece_locs[piece_colour].remove(middle_cell)
-                    break
-            self.piece_locs[colour].append(middle_cell)
+            if (move == JUMP):
+                # Convert the captured piece to another colour accordingly
+                middle_cell = tuple(map(lambda x, y: (x + y) // 2, origin, dest))
+                for (piece_colour, pieces) in self.piece_locs.items():
+                    if (middle_cell in pieces):
+                        self.piece_locs[piece_colour].remove(middle_cell)
+                        break
+                self.piece_locs[colour].append(middle_cell)
 
             self.piece_locs[colour].remove(origin)
             self.piece_locs[colour].append(dest)
