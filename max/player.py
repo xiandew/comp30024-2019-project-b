@@ -1,3 +1,8 @@
+from max.state import (State, MOVE, JUMP, EXIT, PASS)
+from max.utils import (moveable_cells, jumpable_cells)
+
+import math
+import random
 
 class ExamplePlayer:
     def __init__(self, colour):
@@ -12,6 +17,7 @@ class ExamplePlayer:
         strings "red", "green", or "blue" correspondingly.
         """
         # TODO: Set up state representation.
+        self.state = State(colour)
 
 
     def action(self):
@@ -26,7 +32,29 @@ class ExamplePlayer:
         actions.
         """
         # TODO: Decide what action to take.
-        return ("PASS", None)
+        possible_actions = []
+
+        # Loop through all pieces of the current player
+        for curr_cell in self.state.get_pieces():
+
+            occupied = self.state.get_all_pieces()
+
+            # Move actions
+            for next_cell in moveable_cells(curr_cell, occupied):
+                possible_actions += [(MOVE, (curr_cell, next_cell))]
+
+            # Jump actions
+            for next_cell in jumpable_cells(curr_cell, occupied):
+                possible_actions += [(JUMP, (curr_cell, next_cell))]
+
+            # Exit actions
+            if curr_cell in self.state.get_exit_cells():
+                possible_actions += [(EXIT, curr_cell)]
+
+        if (len(possible_actions) == 0):
+            return (PASS, None)
+
+        return random.choice(possible_actions)
 
 
     def update(self, colour, action):
@@ -48,3 +76,4 @@ class ExamplePlayer:
         the action/pass against the game rules).
         """
         # TODO: Update state representation in response to action.
+        self.state.update(colour, action)
