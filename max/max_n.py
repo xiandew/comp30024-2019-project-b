@@ -1,5 +1,6 @@
 import copy
 from max.utils import PASS
+from max.state import State
 
 # max depth of looking ahead
 max_depth = 3
@@ -34,6 +35,13 @@ def result(state, colour, action):
 def evaluate(state):
     v = []
     for colour in colours:
-        total_dist = 12 * 6 - sum(state.exit_dist(piece) + 1 for piece in state.piece_locs[colour])
-        v.append(total_dist)
+        # The shortest distance towards the exit cells.
+        total_dist = 12 * 6 - sum(state.exit_dist(piece) + 5 for piece in state.piece_locs[colour])
+
+        # The number of pieces on board
+        piece_num = len(state.get_pieces(colour))
+        if (state.num_of_exited < 4):
+            #TODO 
+
+        v.append(total_dist + piece_num)
     return tuple(v)

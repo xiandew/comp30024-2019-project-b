@@ -40,8 +40,6 @@ class MaxnPlayer:
         else:
             return max_n(self.state, 0, self.state.colour)[1]
 
-        return random.choice(possible_actions)
-
 
     def update(self, colour, action):
         """

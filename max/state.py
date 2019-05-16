@@ -13,6 +13,9 @@ class State:
         # Record the player's own colour
         self.colour = colour
 
+        # Set a variable to record the number of already exited pieces
+        self.num_of_exited = 0
+
         # Set the initial locations of Chexers pieces for each player
         self.piece_locs = {
                             "red": [(-3, 0), (-3, 1), (-3, 2), (-3, 3)],
