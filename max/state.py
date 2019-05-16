@@ -57,6 +57,10 @@ class State:
 
             occupied = self.get_all_pieces()
 
+            # Exit actions
+            if curr_cell in self.get_exit_cells():
+                possible_actions += [(EXIT, curr_cell)]
+
             # Move actions
             for next_cell in moveable_cells(curr_cell, occupied):
                 possible_actions += [(MOVE, (curr_cell, next_cell))]
@@ -64,10 +68,6 @@ class State:
             # Jump actions
             for next_cell in jumpable_cells(curr_cell, occupied):
                 possible_actions += [(JUMP, (curr_cell, next_cell))]
-
-            # Exit actions
-            if curr_cell in self.get_exit_cells():
-                possible_actions += [(EXIT, curr_cell)]
 
         return possible_actions
 

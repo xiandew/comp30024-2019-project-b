@@ -34,6 +34,6 @@ def result(state, colour, action):
 def evaluate(state):
     v = []
     for colour in colours:
-        total_dist = sum(6 - state.exit_dist(piece) for piece in state.piece_locs[colour])
+        total_dist = 12 * 6 - sum(state.exit_dist(piece) + 1 for piece in state.piece_locs[colour])
         v.append(total_dist)
     return tuple(v)
