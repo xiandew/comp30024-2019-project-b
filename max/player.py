@@ -33,7 +33,7 @@ class MaxnPlayer:
         """
         # TODO: Decide what action to take.
 
-        possible_actions = self.state.get_possible_actions(self.state.colour);
+        possible_actions = self.state.get_possible_actions(self.state.colour)
 
         if (len(possible_actions) == 0):
             return (PASS, None)
