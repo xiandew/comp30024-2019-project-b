@@ -1,8 +1,4 @@
-# String constants to avoid typos
-MOVE = "MOVE"
-JUMP = "JUMP"
-EXIT = "EXIT"
-PASS = "PASS"
+from max.utils import (moveable_cells, jumpable_cells, MOVE, JUMP, EXIT, PASS)
 
 # The exit cells for pieces of each colour
 EXIT_CELLS = {
@@ -25,11 +21,11 @@ class State:
                         }
 
 
-    def get_pieces(self):
+    def get_pieces(self, colour):
         """
         Get a player's own Chexers' pieces.
         """
-        return self.piece_locs[self.colour]
+        return self.piece_locs[colour]
 
     def get_other_pieces(self):
         """
@@ -46,16 +42,51 @@ class State:
         for pieces in self.piece_locs.values():
             occupied += pieces
         return occupied
-    
+
     def get_exit_cells(self):
         """
         Get a player's own exit cells.
         """
         return EXIT_CELLS[self.colour]
-    
+
+    def get_possible_actions(self, colour):
+        possible_actions = []
+
+        # Loop through all pieces of the current player
+        for curr_cell in self.get_pieces(colour):
+
+            occupied = self.get_all_pieces()
+
+            # Move actions
+            for next_cell in moveable_cells(curr_cell, occupied):
+                possible_actions += [(MOVE, (curr_cell, next_cell))]
+
+            # Jump actions
+            for next_cell in jumpable_cells(curr_cell, occupied):
+                possible_actions += [(JUMP, (curr_cell, next_cell))]
+
+            # Exit actions
+            if curr_cell in self.get_exit_cells():
+                possible_actions += [(EXIT, curr_cell)]
+
+        return possible_actions
+
+    def exit_dist(self, qr):
+        """
+        how many hexes away from a coordinate is the nearest exiting hex?
+        Reference from sample solution for part A
+        """
+        q, r = qr
+        if self.colour == 'red':
+            return 3 - q
+        if self.colour == 'green':
+            return 3 - r
+        if self.colour == 'blue':
+            return 3 - (-q-r)
+
     def update(self, colour, action):
         """
-        Update the board state according to the action of the player with the 
+        Update the board state according to the action of the player with the
         specified colour.
         """
         (move, cells) = action

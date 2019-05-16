@@ -1,3 +1,9 @@
+# String constants to avoid typos
+MOVE = "MOVE"
+JUMP = "JUMP"
+EXIT = "EXIT"
+PASS = "PASS"
+
 # The minimum and maximum coordinates on the q and r axes
 MIN_COORDINATE = -3
 MAX_COORDINATE = 3
