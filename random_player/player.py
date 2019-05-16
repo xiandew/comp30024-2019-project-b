@@ -1,10 +1,10 @@
-from max.state import (State, MOVE, JUMP, EXIT, PASS)
-from max.utils import (moveable_cells, jumpable_cells)
+from random_player.state import (State, MOVE, JUMP, EXIT, PASS)
+from random_player.utils import (moveable_cells, jumpable_cells)
 
 import math
 import random
 
-class ExamplePlayer:
+class RandomPlayer:
     def __init__(self, colour):
         """
         This method is called once at the beginning of the game to initialise
