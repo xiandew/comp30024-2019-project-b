@@ -1,11 +1,4 @@
-from max.utils import (moveable_cells, jumpable_cells, MOVE, JUMP, EXIT, PASS)
-
-# The exit cells for pieces of each colour
-EXIT_CELLS = {
-    "red": [(3, -3), (3, -2), (3, -1), (3, 0)],
-    "blue": [(0, -3), (-1, -2), (-2, -1), (-3, 0)],
-    "green": [(-3, 3), (-2, 3), (-1, 3), (0, 3)]
-}
+from max.utils import (get_exit_cells, moveable_cells, jumpable_cells, MOVE, JUMP, EXIT, PASS)
 
 class State:
     def __init__(self, colour):
@@ -18,10 +11,10 @@ class State:
 
         # Set the initial locations of Chexers pieces for each player
         self.piece_locs = {
-                            "red": [(-3, 0), (-3, 1), (-3, 2), (-3, 3)],
-                            "blue": [(0, 3), (1, 2), (2, 1), (3, 0)],
-                            "green": [(0, -3), (1, -3), (2, -3), (3, -3)]
-                        }
+            "red": [(-3, 0), (-3, 1), (-3, 2), (-3, 3)],
+            "blue": [(0, 3), (1, 2), (2, 1), (3, 0)],
+            "green": [(0, -3), (1, -3), (2, -3), (3, -3)]
+        }
 
 
     def get_pieces(self, colour):
@@ -46,12 +39,6 @@ class State:
             occupied += pieces
         return occupied
 
-    def get_exit_cells(self):
-        """
-        Get a player's own exit cells.
-        """
-        return EXIT_CELLS[self.colour]
-
     def get_possible_actions(self, colour):
         possible_actions = []
 
@@ -61,7 +48,7 @@ class State:
             occupied = self.get_all_pieces()
 
             # Exit actions
-            if curr_cell in self.get_exit_cells():
+            if curr_cell in get_exit_cells(colour):
                 possible_actions += [(EXIT, curr_cell)]
 
             # Move actions
@@ -73,19 +60,6 @@ class State:
                 possible_actions += [(JUMP, (curr_cell, next_cell))]
 
         return possible_actions
-
-    def exit_dist(self, qr):
-        """
-        how many hexes away from a coordinate is the nearest exiting hex?
-        Reference from sample solution for part A
-        """
-        q, r = qr
-        if self.colour == 'red':
-            return 3 - q
-        if self.colour == 'green':
-            return 3 - r
-        if self.colour == 'blue':
-            return 3 - (-q-r)
 
     def update(self, colour, action):
         """
@@ -109,5 +83,6 @@ class State:
             self.piece_locs[colour].append(dest)
 
         elif (move == EXIT):
+            self.num_of_exited += 1
             origin = cells
             self.piece_locs[colour].remove(origin)

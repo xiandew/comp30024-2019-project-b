@@ -1,5 +1,5 @@
 import copy
-from max.utils import PASS
+from max.utils import (PASS, exit_dist, EXIT_CELLS)
 from max.state import State
 
 # max depth of looking ahead
@@ -9,11 +9,12 @@ colours = ["red", "green", "blue"]
 # Inputs: state, colour of player
 # Output: (utility vector, best action)
 def max_n(state, depth, colour):
-    if depth == max_depth:
+    # if depth == max_depth:
+    if depth == len([p for p in state.piece_locs.values() if len(p) > 0]):
         return (evaluate(state), (PASS, None))
 
     # 3 dimensions
-    v_max = (-1, -1, -1)
+    v_max = (-99999, -99999, -99999)
     best_action = (PASS, None)
 
     curr_player = colours.index(colour)
@@ -24,7 +25,6 @@ def max_n(state, depth, colour):
         if v[curr_player] > v_max[curr_player]:
             v_max = v
             best_action = action
-
     return (v_max, best_action)
 
 def result(state, colour, action):
@@ -35,13 +35,29 @@ def result(state, colour, action):
 def evaluate(state):
     v = []
     for colour in colours:
-        # The shortest distance towards the exit cells.
-        total_dist = 12 * 6 - sum(state.exit_dist(piece) + 5 for piece in state.piece_locs[colour])
+        e = 0
 
-        # The number of pieces on board
-        piece_num = len(state.get_pieces(colour))
-        if (state.num_of_exited < 4):
-            #TODO 
+        total_dist = sum(exit_dist(colour, piece) + 1 for piece in state.piece_locs[colour])
 
-        v.append(total_dist + piece_num)
+        # when all pieces are lost on the board
+        if (total_dist == 0):
+            # but no enough pieces had exited, give heavy penalty
+            if (state.num_of_exited < 4):
+                e = -10000
+            # otherwise win
+            else:
+                e = 10000
+        else:
+            e = -1 * total_dist
+            # if there are pieces on the exit cells and more than 4 pieces on board,
+            # rewards the case to encourage exit action
+            if ((len(set(state.piece_locs[colour]).intersection(set(EXIT_CELLS[colour]))) > 0)
+                and (len(state.piece_locs[colour]) > (4 - state.num_of_exited))):
+                e += 10000
+
+        # penalty applied if the number of needing to exit less than the current
+        # number of pieces, otherwise rewards are given.
+        e += (len(state.piece_locs[colour]) - (4 - state.num_of_exited)) * 100
+
+        v.append(e)
     return tuple(v)
