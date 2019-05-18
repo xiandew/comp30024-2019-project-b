@@ -1,9 +1,3 @@
-# String constants to avoid typos
-MOVE = "MOVE"
-JUMP = "JUMP"
-EXIT = "EXIT"
-PASS = "PASS"
-
 # The minimum and maximum coordinates on the q and r axes
 MIN_COORDINATE = -3
 MAX_COORDINATE = 3
@@ -12,13 +6,6 @@ MAX_COORDINATE = 3
 # cell
 MOVE_DELTA = [(0, 1), (1, 0), (-1, 1), (0, -1), (-1, 0), (1, -1)]
 JUMP_DELTA = [(delta_q * 2, delta_r * 2) for delta_q, delta_r in MOVE_DELTA]
-
-# The exit cells for pieces of each colour
-EXIT_CELLS = {
-    "red": [(3, -3), (3, -2), (3, -1), (3, 0)],
-    "blue": [(0, -3), (-1, -2), (-2, -1), (-3, 0)],
-    "green": [(-3, 3), (-2, 3), (-1, 3), (0, 3)]
-}
 
 def all_cells():
     """
@@ -59,22 +46,3 @@ def jumpable_cells(curr_cell, occupied):
             if middle_cell in ALL_CELLS and middle_cell in occupied:
                 jumpable.append(cell)
     return jumpable
-
-def exit_dist(colour, qr):
-    """
-    how many hexes away from a coordinate is the nearest exiting hex?
-    Reference from sample solution for part A
-    """
-    q, r = qr
-    if colour == 'red':
-        return 3 - q
-    if colour == 'green':
-        return 3 - r
-    if colour == 'blue':
-        return 3 - (-q-r)
-
-def get_exit_cells(colour):
-    """
-    Get a player's own exit cells.
-    """
-    return EXIT_CELLS[colour]

@@ -1,4 +1,15 @@
-from max.utils import (get_exit_cells, moveable_cells, jumpable_cells, MOVE, JUMP, EXIT, PASS)
+# String constants to avoid typos
+MOVE = "MOVE"
+JUMP = "JUMP"
+EXIT = "EXIT"
+PASS = "PASS"
+
+# The exit cells for pieces of each colour
+EXIT_CELLS = {
+    "red": [(3, -3), (3, -2), (3, -1), (3, 0)],
+    "blue": [(0, -3), (-1, -2), (-2, -1), (-3, 0)],
+    "green": [(-3, 3), (-2, 3), (-1, 3), (0, 3)]
+}
 
 class State:
     def __init__(self, colour):
@@ -6,22 +17,19 @@ class State:
         # Record the player's own colour
         self.colour = colour
 
-        # Set a variable to record the number of already exited pieces
-        self.num_of_exited = 0
-
         # Set the initial locations of Chexers pieces for each player
         self.piece_locs = {
-            "red": [(-3, 0), (-3, 1), (-3, 2), (-3, 3)],
-            "blue": [(0, 3), (1, 2), (2, 1), (3, 0)],
-            "green": [(0, -3), (1, -3), (2, -3), (3, -3)]
-        }
+                            "red": [(-3, 0), (-3, 1), (-3, 2), (-3, 3)],
+                            "blue": [(0, 3), (1, 2), (2, 1), (3, 0)],
+                            "green": [(0, -3), (1, -3), (2, -3), (3, -3)]
+                        }
 
 
-    def get_pieces(self, colour):
+    def get_pieces(self):
         """
         Get a player's own Chexers' pieces.
         """
-        return self.piece_locs[colour]
+        return self.piece_locs[self.colour]
 
     def get_other_pieces(self):
         """
@@ -38,32 +46,16 @@ class State:
         for pieces in self.piece_locs.values():
             occupied += pieces
         return occupied
-
-    def get_possible_actions(self, colour):
-        possible_actions = []
-
-        # Loop through all pieces of the current player
-        for curr_cell in self.get_pieces(colour):
-
-            occupied = self.get_all_pieces()
-
-            # Exit actions
-            if curr_cell in get_exit_cells(colour):
-                possible_actions += [(EXIT, curr_cell)]
-
-            # Move actions
-            for next_cell in moveable_cells(curr_cell, occupied):
-                possible_actions += [(MOVE, (curr_cell, next_cell))]
-
-            # Jump actions
-            for next_cell in jumpable_cells(curr_cell, occupied):
-                possible_actions += [(JUMP, (curr_cell, next_cell))]
-
-        return possible_actions
-
+    
+    def get_exit_cells(self):
+        """
+        Get a player's own exit cells.
+        """
+        return EXIT_CELLS[self.colour]
+    
     def update(self, colour, action):
         """
-        Update the board state according to the action of the player with the
+        Update the board state according to the action of the player with the 
         specified colour.
         """
         (move, cells) = action
@@ -83,7 +75,5 @@ class State:
             self.piece_locs[colour].append(dest)
 
         elif (move == EXIT):
-            if colour == self.colour:
-                self.num_of_exited += 1
             origin = cells
             self.piece_locs[colour].remove(origin)
