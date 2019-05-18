@@ -83,6 +83,7 @@ class State:
             self.piece_locs[colour].append(dest)
 
         elif (move == EXIT):
-            self.num_of_exited += 1
+            if colour == self.colour:
+                self.num_of_exited += 1
             origin = cells
             self.piece_locs[colour].remove(origin)
