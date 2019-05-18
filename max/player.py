@@ -1,5 +1,5 @@
 from max.state import (State, MOVE, JUMP, EXIT, PASS)
-from max.max_n import max_n
+from max.max_n import get_best_action
 
 import math
 import random
@@ -38,7 +38,7 @@ class MaxnPlayer:
         if (len(possible_actions) == 0):
             return (PASS, None)
         else:
-            return max_n(self.state, 0, self.state.colour)[1]
+            return get_best_action(self.state)
 
 
     def update(self, colour, action):
