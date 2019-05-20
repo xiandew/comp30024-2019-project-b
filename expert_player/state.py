@@ -7,7 +7,11 @@ class State:
         self.colour = colour
 
         # Set a variable to record the number of already exited pieces
-        self.num_of_exited = 0
+        self.num_of_exited = {
+            "red": 0,
+            "blue": 0,
+            "green": 0
+        }
 
         # Set the initial locations of Chexers pieces for each player
         self.piece_locs = {
@@ -83,6 +87,6 @@ class State:
             self.piece_locs[colour].append(dest)
 
         elif (move == EXIT):
-            self.num_of_exited += 1
             origin = cells
             self.piece_locs[colour].remove(origin)
+            self.num_of_exited[colour] += 1
