@@ -88,10 +88,9 @@ class State:
             self.piece_locs[colour].append(dest)
 
         elif (move == EXIT):
-            if colour == self.colour:
-                self.num_of_exited[colour] += 1
             origin = cells
             self.piece_locs[colour].remove(origin)
+            self.num_of_exited[colour] += 1
 
     def write_to_file(self):
         with open('max/states.json') as json_file:

@@ -4,7 +4,7 @@ from expert_player.max_n import get_best_action
 import math
 import random
 
-class MaxnPlayer:
+class ExpertPlayer:
     def __init__(self, colour):
         """
         This method is called once at the beginning of the game to initialise
