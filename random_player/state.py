@@ -31,16 +31,6 @@ class State:
         """
         return self.piece_locs[self.colour]
 
-    def get_other_pieces(self):
-        """
-        Get other players' Chexer pieces locations
-        """
-        other_pieces = []
-        for (colour, pieces) in self.piece_locs.items():
-            if (colour != self.colour):
-                other_pieces += pieces
-        return other_pieces
-
     def get_all_pieces(self):
         occupied = []
         for pieces in self.piece_locs.values():

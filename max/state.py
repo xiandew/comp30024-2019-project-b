@@ -21,23 +21,6 @@ class State:
             "green": [(0, -3), (1, -3), (2, -3), (3, -3)]
         }
 
-
-    def get_pieces(self, colour):
-        """
-        Get a player's own Chexers' pieces.
-        """
-        return self.piece_locs[colour]
-
-    def get_other_pieces(self):
-        """
-        Get other players' Chexer pieces locations
-        """
-        other_pieces = []
-        for (colour, pieces) in self.piece_locs.items():
-            if (colour != self.colour):
-                other_pieces += pieces
-        return other_pieces
-
     def get_all_pieces(self):
         occupied = []
         for pieces in self.piece_locs.values():
@@ -48,7 +31,7 @@ class State:
         possible_actions = []
 
         # Loop through all pieces of the current player
-        for curr_cell in self.get_pieces(colour):
+        for curr_cell in self.piece_locs[colour]:
 
             occupied = self.get_all_pieces()
 
@@ -96,22 +79,6 @@ class State:
         with open('max/states.json') as json_file:
             states = json.load(json_file)
 
-        # states['my_colour'] = self.colour
-        # data = {"red": [], "green": [], "blue": []}
-        # for colour, pieces in self.piece_locs.items():
-        #     for p in pieces:
-        #         data[colour].append(list(p))
-        # states['states'].append(data)
-
-        # with open('max/states.json', 'w') as json_file:
-        #     json.dump(states, json_file)
         states.append(self.__dict__)
         with open('max/states.json', 'w') as json_file:
             json.dump(states, json_file)
-
-
-    def is_over(self):
-        for exit_num in self.num_of_exited.values():
-            if exit_num >= 4:
-                return True
-        return False
