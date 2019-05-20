@@ -1,7 +1,12 @@
+"""
+This module is used to simulate the max-n algorithm, which allows the player
+to find the best action in a game with more than two players.
+"""
+
 import copy
+import json
 from max.utils import (PASS, exit_dist, EXIT_CELLS)
 from max.state import State
-import json
 
 # max depth of looking ahead
 max_depth = 3
@@ -48,32 +53,7 @@ def result(state, colour, action):
 def evaluate(state, weights):
     v = []
     for colour in colours:
-        # e = 0
-
-        # total_dist = sum(exit_dist(colour, piece) + 1 for piece in state.piece_locs[colour])
-
-        # # when all pieces are lost on the board
-        # if (total_dist == 0):
-        #     # but no enough pieces had exited, give heavy penalty
-        #     if (state.num_of_exited[colour] < 4):
-        #         e = -10000
-        #     # otherwise win
-        #     else:
-        #         e = 10000
-        # else:
-        #     e = -1 * total_dist
-        #     # if there are pieces on the exit cells and more than 4 pieces on board,
-        #     # rewards the case to encourage exit action
-        #     if ((len(set(state.piece_locs[colour]).intersection(set(EXIT_CELLS[colour]))) > 0)
-        #         and (len(state.piece_locs[colour]) > (4 - state.num_of_exited[colour]))):
-        #         e += 10000
-
-        # # penalty applied if the number of needing to exit less than the current
-        # # number of pieces, otherwise rewards are given.
-        # e += (len(state.piece_locs[colour]) - (4 - state.num_of_exited)) * 100
-
         e = myeval(state, weights, colour)
-
         v.append(e)
     return tuple(v)
 
