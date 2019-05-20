@@ -13,7 +13,7 @@ def get_best_action(state):
     curr_state = state
     with open('max/weight.json') as json_file:
         weights = json.load(json_file)
-    return max_n(state, 0, state.colour, weights['weights'])[1]
+    return max_n(state, 0, state.colour, weights)[1]
 
 # Inputs: state, colour of player
 # Output: (utility vector, best action)
@@ -79,11 +79,19 @@ def evaluate(state, weights):
 
 def myeval(state, weights, colour):
     if type(state) is dict:
-        piece_locs = state
+        piece_locs = state['piece_locs']
+        num_of_exited = state['num_of_exited']
     else:
         piece_locs = state.piece_locs
+        num_of_exited = state.num_of_exited
     total_dist = sum(exit_dist(colour, piece) + 1 for piece in piece_locs[colour])
     e = 0
 
-    e = weights[0] * total_dist * -1
+    to_exit = 4 - num_of_exited[colour]
+    exitable_num = len(piece_locs[colour]) - to_exit
+
+    if (exitable_num < 0):
+        to_exit = 0
+
+    e = weights['total_dist'] * total_dist * -1 + weights['exitable_num'] * exitable_num + (4 - to_exit) * weights['to_exit']
     return e

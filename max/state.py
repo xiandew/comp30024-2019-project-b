@@ -97,13 +97,16 @@ class State:
         with open('max/states.json') as json_file:
             states = json.load(json_file)
 
-        states['my_colour'] = self.colour
-        data = {"red": [], "green": [], "blue": []}
-        for colour, pieces in self.piece_locs.items():
-            for p in pieces:
-                data[colour].append(list(p))
-        states['states'].append(data)
+        # states['my_colour'] = self.colour
+        # data = {"red": [], "green": [], "blue": []}
+        # for colour, pieces in self.piece_locs.items():
+        #     for p in pieces:
+        #         data[colour].append(list(p))
+        # states['states'].append(data)
 
+        # with open('max/states.json', 'w') as json_file:
+        #     json.dump(states, json_file)
+        states.append(self.__dict__)
         with open('max/states.json', 'w') as json_file:
             json.dump(states, json_file)
 

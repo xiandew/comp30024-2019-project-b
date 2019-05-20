@@ -19,7 +19,7 @@ class MaxnPlayer:
         """
         # TODO: Set up state representation.
         self.state = State(colour)
-        reset_states()
+        reset_states(self.state)
 
 
     def action(self):
