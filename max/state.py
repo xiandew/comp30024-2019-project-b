@@ -1,3 +1,9 @@
+"""
+This module is used to represent the internal game state of the Chexers game.
+The state will include the locations of the pieces for each player, the number
+of already exited pieces for each player, and the colour of the player.
+"""
+
 from max.utils import (get_exit_cells, moveable_cells, jumpable_cells, MOVE, JUMP, EXIT, PASS)
 import json
 
@@ -22,12 +28,17 @@ class State:
         }
 
     def get_all_pieces(self):
-        occupied = []
-        for pieces in self.piece_locs.values():
-            occupied += pieces
-        return occupied
+        """
+        Get the locations of all pieces on board as a single list.
+        """
+        return list(self.piece_locs.values())
 
     def get_possible_actions(self, colour):
+        """
+        Get all the possible actions availabe for the player with the specified
+        colour.
+        """
+
         possible_actions = []
 
         # Loop through all pieces of the current player
@@ -58,8 +69,11 @@ class State:
         if (move == MOVE or move == JUMP):
             (origin, dest) = cells
 
+            # Convert the colour of the piece being jumped over to the colour of 
+            # the piece that jumps over it. 
             if (move == JUMP):
-                # Convert the captured piece to another colour accordingly
+                
+                # The cell being jumped over
                 middle_cell = tuple(map(lambda x, y: (x + y) // 2, origin, dest))
                 for (piece_colour, pieces) in self.piece_locs.items():
                     if (middle_cell in pieces):
@@ -76,6 +90,9 @@ class State:
             self.num_of_exited[colour] += 1
 
     def write_to_file(self):
+        """
+        Write the state to the end of file that records all the game states.
+        """
         with open('max/states.json') as json_file:
             states = json.load(json_file)
 
