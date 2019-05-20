@@ -72,14 +72,18 @@ def evaluate(state, weights):
         # # number of pieces, otherwise rewards are given.
         # e += (len(state.piece_locs[colour]) - (4 - state.num_of_exited)) * 100
 
-        e = eval(state, weights, colour)
+        e = myeval(state, weights, colour)
 
         v.append(e)
     return tuple(v)
 
-def eval(state, weights, colour):
-    total_dist = sum(exit_dist(colour, piece) + 1 for piece in state.piece_locs[colour])
+def myeval(state, weights, colour):
+    if type(state) is dict:
+        piece_locs = state
+    else:
+        piece_locs = state.piece_locs
+    total_dist = sum(exit_dist(colour, piece) + 1 for piece in piece_locs[colour])
     e = 0
 
-    e = weights[0] * total_dist
+    e = weights[0] * total_dist * -1
     return e

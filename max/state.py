@@ -96,7 +96,7 @@ class State:
     def write_to_file(self):
         with open('max/states.json') as json_file:
             states = json.load(json_file)
-        
+
         states['my_colour'] = self.colour
         data = {"red": [], "green": [], "blue": []}
         for colour, pieces in self.piece_locs.items():
@@ -107,7 +107,7 @@ class State:
         with open('max/states.json', 'w') as json_file:
             json.dump(states, json_file)
 
-        
+
     def is_over(self):
         for exit_num in self.num_of_exited.values():
             if exit_num >= 4:
