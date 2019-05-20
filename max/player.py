@@ -1,5 +1,6 @@
 from max.state import (State, MOVE, JUMP, EXIT, PASS)
 from max.max_n import get_best_action
+from max.TDLeaf import start_learning
 
 import math
 import random
@@ -61,3 +62,6 @@ class MaxnPlayer:
         """
         # TODO: Update state representation in response to action.
         self.state.update(colour, action)
+        self.state.write_to_file()
+        if (self.state.is_over()):
+            start_learning()
