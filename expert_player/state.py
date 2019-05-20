@@ -20,23 +20,6 @@ class State:
             "green": [(0, -3), (1, -3), (2, -3), (3, -3)]
         }
 
-
-    def get_pieces(self, colour):
-        """
-        Get a player's own Chexers' pieces.
-        """
-        return self.piece_locs[colour]
-
-    def get_other_pieces(self):
-        """
-        Get other players' Chexer pieces locations
-        """
-        other_pieces = []
-        for (colour, pieces) in self.piece_locs.items():
-            if (colour != self.colour):
-                other_pieces += pieces
-        return other_pieces
-
     def get_all_pieces(self):
         occupied = []
         for pieces in self.piece_locs.values():
@@ -47,7 +30,7 @@ class State:
         possible_actions = []
 
         # Loop through all pieces of the current player
-        for curr_cell in self.get_pieces(colour):
+        for curr_cell in self.piece_locs[colour]:
 
             occupied = self.get_all_pieces()
 
