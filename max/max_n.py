@@ -22,7 +22,7 @@ def max_n(state, depth, colour, weights):
         return (evaluate(state, weights), (PASS, None))
 
     # 3 dimensions
-    v_max = (-99999, -99999, -99999)
+    v_max = (-float('Inf'), -float('Inf'), -float('Inf'))
     best_action = (PASS, None)
 
     curr_player = colours.index(colour)
