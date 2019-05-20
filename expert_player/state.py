@@ -1,5 +1,4 @@
-from max.utils import (get_exit_cells, moveable_cells, jumpable_cells, MOVE, JUMP, EXIT, PASS)
-import json
+from expert_player.utils import (get_exit_cells, moveable_cells, jumpable_cells, MOVE, JUMP, EXIT, PASS)
 
 class State:
     def __init__(self, colour):
@@ -88,31 +87,6 @@ class State:
             self.piece_locs[colour].append(dest)
 
         elif (move == EXIT):
-            if colour == self.colour:
-                self.num_of_exited[colour] += 1
             origin = cells
             self.piece_locs[colour].remove(origin)
-
-    def write_to_file(self):
-        with open('max/states.json') as json_file:
-            states = json.load(json_file)
-
-        # states['my_colour'] = self.colour
-        # data = {"red": [], "green": [], "blue": []}
-        # for colour, pieces in self.piece_locs.items():
-        #     for p in pieces:
-        #         data[colour].append(list(p))
-        # states['states'].append(data)
-
-        # with open('max/states.json', 'w') as json_file:
-        #     json.dump(states, json_file)
-        states.append(self.__dict__)
-        with open('max/states.json', 'w') as json_file:
-            json.dump(states, json_file)
-
-
-    def is_over(self):
-        for exit_num in self.num_of_exited.values():
-            if exit_num >= 4:
-                return True
-        return False
+            self.num_of_exited[colour] += 1
