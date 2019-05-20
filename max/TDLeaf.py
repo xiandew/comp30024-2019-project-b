@@ -25,8 +25,8 @@ def update_weights(l, states):
         w = weights[feature]
         newW = w
         for j in range(0, len(states) - 1):
-            td = np.tanh(myeval(states[j + 1], weights, my_colour) - myeval(states[j], weights, my_colour))
-            newW += ((1 / (np.cosh(myeval(states[j], weights, my_colour)))) * td)
+            td = np.tanh(myeval(states[j + 1], weights, my_colour)) - np.tanh(myeval(states[j], weights, my_colour))
+            newW += ((1 / (np.cosh(myeval(states[j], weights, my_colour)))) ** 2 * td)
         weights[feature] = newW
 
     with open('max/weight.json', 'w') as json_file:
