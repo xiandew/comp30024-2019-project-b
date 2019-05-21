@@ -11,11 +11,8 @@ from max.state import State
 # max depth of looking ahead
 max_depth = 3
 colours = ["red", "green", "blue"]
-curr_state = None
 
 def get_best_action(state):
-    global curr_state
-    curr_state = state
     with open('max/weight.json') as json_file:
         weights = json.load(json_file)
     return max_n(state, 0, state.colour, weights)[1]
@@ -23,7 +20,7 @@ def get_best_action(state):
 # Inputs: state, colour of player
 # Output: (utility vector, best action)
 def max_n(state, depth, colour, weights):
-    if depth == max_depth:
+    if depth == max_depth or len(state.piece_locs[colour]) == 0:
         return (evaluate(state, weights), (PASS, None))
 
     # 3 dimensions
@@ -31,12 +28,7 @@ def max_n(state, depth, colour, weights):
     best_action = (PASS, None)
 
     curr_player = colours.index(colour)
-    next_player = curr_player + 1
-    while(1):
-        next_player %= len(colours)
-        if (len(curr_state.piece_locs[colours[next_player]]) > 0):
-            break
-        next_player += 1
+    next_player = (curr_player + 1) % len(colours)
 
     for action in state.get_possible_actions(colour):
         v = max_n(result(state, colour, action), depth + 1, colours[next_player], weights)[0]
@@ -73,5 +65,7 @@ def myeval(state, weights, colour):
     if (exitable_num < 0):
         to_exit = 0
 
-    e = weights['total_dist'] * total_dist * -1 + weights['exitable_num'] * exitable_num + (4 - to_exit) * weights['to_exit']
+    opponent_exited = sum(exited for c, exited in num_of_exited.items() if c != colour and len(piece_locs[c]) > 0)
+
+    e = weights['total_dist'] * total_dist * -1 + weights['exitable_num'] * exitable_num + (4 - to_exit) * weights['to_exit'] + opponent_exited * weights['opponent_exited'] * -1
     return e

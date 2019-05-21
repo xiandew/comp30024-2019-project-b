@@ -5,18 +5,14 @@ from expert_player.state import State
 # max depth of looking ahead
 max_depth = 3
 colours = ["red", "green", "blue"]
-curr_state = None
 
 def get_best_action(state):
-    global curr_state
-    curr_state = state
     return max_n(state, 0, state.colour)[1]
 
 # Inputs: state, colour of player
 # Output: (utility vector, best action)
 def max_n(state, depth, colour):
-    # if depth == max_depth:
-    if depth == len([p for p in state.piece_locs.values() if len(p) > 0]):
+    if depth == max_depth or len(state.piece_locs[colour]) == 0:
         return (evaluate(state), (PASS, None))
 
     # 3 dimensions
@@ -24,12 +20,7 @@ def max_n(state, depth, colour):
     best_action = (PASS, None)
 
     curr_player = colours.index(colour)
-    next_player = curr_player + 1
-    while(1):
-        next_player %= len(colours)
-        if (len(curr_state.piece_locs[colours[next_player]]) > 0):
-            break
-        next_player += 1
+    next_player = (curr_player + 1) % len(colours)
 
     for action in state.get_possible_actions(colour):
         v = max_n(result(state, colour, action), depth + 1, colours[next_player])[0]
