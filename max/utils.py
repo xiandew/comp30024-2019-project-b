@@ -1,18 +1,8 @@
-import json
-import copy
-
 # String constants to avoid typos
 MOVE = "MOVE"
 JUMP = "JUMP"
 EXIT = "EXIT"
 PASS = "PASS"
-
-TOTAL_DIST = "total_dist"
-TO_EXIT = "to_exit"
-CAN_EXIT = "can_exit"
-OPPONENT_EXITED = "opponent_exited"
-
-COLOURS = ["red", "green", "blue"]
 
 # The minimum and maximum coordinates on the q and r axes
 MIN_COORDINATE = -3
@@ -88,52 +78,3 @@ def get_exit_cells(colour):
     Get a player's own exit cells.
     """
     return EXIT_CELLS[colour]
-
-def get_weights():
-    with open('max/weight.json') as json_file:
-        weights = json.load(json_file)
-    return weights
-
-#_______________________________________________________________________________
-
-def next_p(state, curr_player):
-    next_player = curr_player + 1
-    while(1):
-        next_player %= 3
-        if len(state.piece_locs[COLOURS[next_player]]) > 0:
-            break
-        next_player += 1
-    return next_player
-
-def result(state, colour, action):
-    next_state = copy.deepcopy(state)
-    next_state.update(colour, action)
-    return next_state
-
-def evaluate(state, weights):
-    v = []
-    for colour in COLOURS:
-        e = myeval(state, weights, colour)
-        v.append(e)
-    return tuple(v)
-
-def myeval(state, weights, colour):
-    if not state:
-        return -float('Inf')
-
-    e = 0
-
-    # The sum of the distance between each piece to the exit cell
-    e += state.get_feature(TOTAL_DIST, colour) * weights[TOTAL_DIST] * -1
-
-    # The number of pieces that need to exit to win the game
-    e += state.get_feature(TO_EXIT, colour) * weights[TO_EXIT] * -1
-
-    # Whether the player has enough pieces to win the game.
-    e += state.get_feature(CAN_EXIT, colour) * weights[CAN_EXIT]
-
-    # The sum of the number of exited pieces for our opponents. If the player
-    # deosn't have enough pieces to win the game, that player will be ignored.
-    e += state.get_feature(OPPONENT_EXITED, colour) * weights[OPPONENT_EXITED] * -1
-
-    return e

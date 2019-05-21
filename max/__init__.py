@@ -1,1 +1,1 @@
-from max.player import MaxnPlayer as Player
+from max.player import ExpertPlayer as Player
