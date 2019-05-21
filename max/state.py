@@ -122,15 +122,21 @@ class State:
         num_of_exited = self.num_of_exited
 
         if (feature == TOTAL_DIST):
-            return sum(exit_dist(colour, piece) + 1 for piece in piece_locs[colour])
+            return sum(exit_dist(colour, piece) + 1 for piece in piece_locs[colour]) / 108
         if (feature == TO_EXIT):
             to_exit = 4 - num_of_exited[colour]
+            if to_exit <= 0:
+                return -100
             # If there is not enough pieces, can_exit will be negative. Else, it will non-negative
             if len(piece_locs[colour]) < to_exit:
                 to_exit = 100
             return to_exit
         if (feature == CAN_EXIT):
-            return len(piece_locs[colour]) - (4 - num_of_exited[colour])
+            num_pieces = len(piece_locs[colour])
+            can_exit = num_pieces - (4 - num_of_exited[colour])
+            if num_pieces == 0 and can_exit <= 0:
+                return -100
+            return can_exit
         if (feature == OPPONENT_EXITED):
             return sum(exited for c, exited in num_of_exited.items() if c != colour and len(piece_locs[c]) > 0)
 

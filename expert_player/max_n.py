@@ -9,7 +9,7 @@ colours = ["red", "green", "blue"]
 def get_best_action(state):
     return max_n(state, 0, state.colour)[1]
 
-# Inputs: state, colour of player
+# Inputs: state, depth, colour of player
 # Output: (utility vector, best action)
 def max_n(state, depth, colour):
     if depth == max_depth:
@@ -40,6 +40,8 @@ def evaluate(state):
         e = 0
 
         total_dist = sum(exit_dist(colour, piece) + 1 for piece in state.piece_locs[colour])
+        to_exit = 4 - state.num_of_exited[colour]
+        pieces = state.piece_locs[colour]
 
         # when all pieces are lost on the board
         if (total_dist == 0):
@@ -53,13 +55,13 @@ def evaluate(state):
             e = -1 * total_dist
             # if there are pieces on the exit cells and more than 4 pieces on board,
             # rewards the case to encourage exit action
-            if ((len(set(state.piece_locs[colour]).intersection(set(EXIT_CELLS[colour]))) > 0)
-                and (len(state.piece_locs[colour]) > (4 - state.num_of_exited[colour]))):
+            if ((len(set(pieces).intersection(set(EXIT_CELLS[colour]))) > 0)
+                and (len(pieces) > to_exit)):
                 e += 10000
 
         # penalty applied if the number of needing to exit less than the current
         # number of pieces, otherwise rewards are given.
-        e += (len(state.piece_locs[colour]) - (4 - state.num_of_exited[colour])) * 100
+        e += (len(pieces) - to_exit) * 100
 
         v.append(e)
     return tuple(v)

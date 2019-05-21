@@ -28,7 +28,7 @@ def update_weights(l, states):
             next_score = myeval(next_state, weights, colour)
 
             td = np.tanh(next_score) - np.tanh(curr_score)
-            newW += 1e12 * (((1 / np.cosh(curr_score)) ** 2) * curr_state.get_feature(feature, colour) * td)
+            newW += 1000 * (((1 / np.cosh(curr_score)) ** 2) * curr_state.get_feature(feature, colour) * td)
         weights[feature] = newW
 
     with open('max/weight.json', 'w') as json_file:
