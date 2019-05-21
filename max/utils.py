@@ -1,3 +1,5 @@
+import json
+
 # String constants to avoid typos
 MOVE = "MOVE"
 JUMP = "JUMP"
@@ -78,3 +80,9 @@ def get_exit_cells(colour):
     Get a player's own exit cells.
     """
     return EXIT_CELLS[colour]
+
+def get_weights():
+    with open('max/weight.json') as json_file:
+        weights = json.load(json_file)
+    return weights
+    

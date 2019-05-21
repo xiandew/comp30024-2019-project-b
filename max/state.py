@@ -102,3 +102,18 @@ class State:
         states.append(self.__dict__)
         with open('max/states.json', 'w') as json_file:
             json.dump(states, json_file)
+
+    def is_over(self):
+        for exit_num in self.num_of_exited.values():
+            if exit_num >= 4:
+                return True
+        return False
+
+def dict_to_state(dict_state):
+    piece_locs = {}
+    for colour, pieces in dict_state['piece_locs'].items():
+        piece_locs[colour] = [tuple(p) for p in pieces]
+    dict_state['piece_locs'] = piece_locs
+    state = State(dict_state['colour'])
+    state.__dict__ = dict_state
+    return state

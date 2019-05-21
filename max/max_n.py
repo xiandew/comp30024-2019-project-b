@@ -5,7 +5,7 @@ to find the best action in a game with more than two players.
 
 import copy
 import json
-from max.utils import (PASS, exit_dist, EXIT_CELLS)
+from max.utils import (PASS, exit_dist, EXIT_CELLS, get_weights)
 from max.state import State
 
 # max depth of looking ahead
@@ -13,29 +13,34 @@ max_depth = 3
 colours = ["red", "green", "blue"]
 
 def get_best_action(state):
-    with open('max/weight.json') as json_file:
-        weights = json.load(json_file)
+    weights = get_weights()
     return max_n(state, 0, state.colour, weights)[1]
+
+def get_best_state(state):
+    weights = get_weights()
+    return max_n(state, 0, state.colour, weights)[2]
 
 # Inputs: state, colour of player
 # Output: (utility vector, best action)
 def max_n(state, depth, colour, weights):
-    if depth == max_depth or len(state.piece_locs[colour]) == 0:
-        return (evaluate(state, weights), (PASS, None))
+    if depth == max_depth:
+        return (evaluate(state, weights), (PASS, None), None)
 
     # 3 dimensions
     v_max = (-float('Inf'), -float('Inf'), -float('Inf'))
     best_action = (PASS, None)
+    best_state = None
 
     curr_player = colours.index(colour)
     next_player = (curr_player + 1) % len(colours)
 
-    for action in state.get_possible_actions(colour):
+    for action in state.get_possible_actions(colour) + [(PASS, None)]:
         v = max_n(result(state, colour, action), depth + 1, colours[next_player], weights)[0]
         if v[curr_player] > v_max[curr_player]:
             v_max = v
             best_action = action
-    return (v_max, best_action)
+            best_state = result(state, colour, action)
+    return (v_max, best_action, best_state)
 
 def result(state, colour, action):
     next_state = copy.deepcopy(state)
@@ -50,12 +55,12 @@ def evaluate(state, weights):
     return tuple(v)
 
 def myeval(state, weights, colour):
-    if type(state) is dict:
-        piece_locs = state['piece_locs']
-        num_of_exited = state['num_of_exited']
-    else:
-        piece_locs = state.piece_locs
-        num_of_exited = state.num_of_exited
+    if not state:
+        return -float('Inf')
+
+    piece_locs = state.piece_locs
+    num_of_exited = state.num_of_exited
+
     total_dist = sum(exit_dist(colour, piece) + 1 for piece in piece_locs[colour])
     e = 0
 

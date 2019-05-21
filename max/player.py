@@ -43,4 +43,5 @@ class MaxnPlayer:
         """
         self.state.update(colour, action)
         self.state.write_to_file()
-        start_learning()
+        if (self.state.is_over()):
+            start_learning()

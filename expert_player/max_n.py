@@ -12,7 +12,7 @@ def get_best_action(state):
 # Inputs: state, colour of player
 # Output: (utility vector, best action)
 def max_n(state, depth, colour):
-    if depth == max_depth or len(state.piece_locs[colour]) == 0:
+    if depth == max_depth:
         return (evaluate(state), (PASS, None))
 
     # 3 dimensions
@@ -22,7 +22,7 @@ def max_n(state, depth, colour):
     curr_player = colours.index(colour)
     next_player = (curr_player + 1) % len(colours)
 
-    for action in state.get_possible_actions(colour):
+    for action in state.get_possible_actions(colour) + [(PASS, None)]:
         v = max_n(result(state, colour, action), depth + 1, colours[next_player])[0]
         if v[curr_player] > v_max[curr_player]:
             v_max = v

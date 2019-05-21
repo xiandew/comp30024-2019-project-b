@@ -1,11 +1,8 @@
 import json
 import numpy as np
-from max.max_n import myeval
-
-def get_weights():
-    with open('max/weight.json') as json_file:
-        weights = json.load(json_file)
-    return weights
+from max.max_n import (myeval, get_best_state)
+from max.utils import get_weights
+from max.state import dict_to_state
 
 def get_states():
     with open('max/states.json') as json_file:
@@ -25,8 +22,15 @@ def update_weights(l, states):
         w = weights[feature]
         newW = w
         for j in range(0, len(states) - 1):
-            td = np.tanh(myeval(states[j + 1], weights, my_colour)) - np.tanh(myeval(states[j], weights, my_colour))
-            newW += ((1 / (np.cosh(myeval(states[j], weights, my_colour)))) ** 2 * td)
+            print(feature, " State", j, "\n")
+
+            curr_state = get_best_state(dict_to_state(states[j]))
+            curr_score = myeval(curr_state, weights, my_colour)
+            next_state = get_best_state(dict_to_state(states[j + 1]))
+            next_score = myeval(next_state, weights, my_colour)
+
+            td = np.tanh(next_score) - np.tanh(curr_score)
+            newW += 10000 * ((1 / (np.cosh(curr_score))) ** 2 * td)
         weights[feature] = newW
 
     with open('max/weight.json', 'w') as json_file:
@@ -34,14 +38,8 @@ def update_weights(l, states):
 
 def reset_states(state):
     with open('max/states.json', 'w') as json_file:
-        # initial_state = {"states": [{
-        #     "red": [[-3, 0], [-3, 1], [-3, 2], [-3, 3]],
-        #     "blue": [[0, 3], [1, 2], [2, 1], [3, 0]],
-        #     "green": [[0, -3], [1, -3], [2, -3], [3, -3]]
-        #     }]}
         json.dump([state.__dict__], json_file)
 
 def start_learning():
     states = get_states()
     update_weights(0, states)
-    # reset_states()
