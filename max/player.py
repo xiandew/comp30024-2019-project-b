@@ -8,7 +8,7 @@ import math
 import random
 
 from max.state import (State, PASS)
-from max.max_n import get_best_action
+from max.max_n import (get_best_action, write_best_leaf)
 from max.TDLeaf import (reset_states, start_learning)
 
 class MaxnPlayer:
@@ -41,7 +41,7 @@ class MaxnPlayer:
         all game states recorded. In addition, update the set of weights as long
         as the game is not over.
         """
-        self.state.update(colour, action)
-        self.state.write_to_file()
+        self.state.update(colour, action)            
+        write_best_leaf(self.state, colour)
         if (self.state.is_over()):
             start_learning()

@@ -1,6 +1,6 @@
 import json
 import numpy as np
-from max.max_n import (myeval, get_best_state)
+from max.max_n import myeval
 from max.utils import get_weights
 from max.state import dict_to_state
 
@@ -22,11 +22,10 @@ def update_weights(l, states):
         w = weights[feature]
         newW = w
         for j in range(0, len(states) - 1):
-            print(feature, " State", j, "\n")
 
-            curr_state = get_best_state(dict_to_state(states[j]))
+            curr_state = dict_to_state(states[j])
             curr_score = myeval(curr_state, weights, my_colour)
-            next_state = get_best_state(dict_to_state(states[j + 1]))
+            next_state = dict_to_state(states[j + 1])
             next_score = myeval(next_state, weights, my_colour)
 
             td = np.tanh(next_score) - np.tanh(curr_score)

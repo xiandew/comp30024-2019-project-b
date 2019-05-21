@@ -109,6 +109,13 @@ class State:
                 return True
         return False
 
+    def active_players(self):
+        actives = []
+        for colour, pieces in self.piece_locs.items():
+            if len(pieces) > 0:
+                actives.append(colour)
+        return actives
+
 def dict_to_state(dict_state):
     piece_locs = {}
     for colour, pieces in dict_state['piece_locs'].items():
