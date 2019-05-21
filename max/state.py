@@ -31,7 +31,10 @@ class State:
         """
         Get the locations of all pieces on board as a single list.
         """
-        return list(self.piece_locs.values())
+        occupied = []
+        for pieces in self.piece_locs.values():
+            occupied += pieces
+        return occupied
 
     def get_possible_actions(self, colour):
         """
