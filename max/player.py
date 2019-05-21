@@ -7,9 +7,10 @@ turn.
 import math
 import random
 
-from max.state import (State, PASS)
-from max.max_n import (get_best_action, write_best_leaf)
-from max.TDLeaf import (reset_states, start_learning)
+from max.state import State
+from max.utils import PASS
+from max.max_n import (get_best_action)
+from max.TDLeaf import (write_best_leaf, reset_states, learning)
 
 class MaxnPlayer:
     def __init__(self, colour):
@@ -41,7 +42,7 @@ class MaxnPlayer:
         all game states recorded. In addition, update the set of weights as long
         as the game is not over.
         """
-        self.state.update(colour, action)            
-        write_best_leaf(self.state, colour)
-        if (self.state.is_over()):
-            start_learning()
+        self.state.update(colour, action)
+        write_best_leaf(self.state)
+        # if (not self.state.is_over()):
+        learning()

@@ -4,7 +4,8 @@ The state will include the locations of the pieces for each player, the number
 of already exited pieces for each player, and the colour of the player.
 """
 
-from max.utils import (get_exit_cells, moveable_cells, jumpable_cells, MOVE, JUMP, EXIT, PASS)
+from max.utils import (MOVE, JUMP, EXIT, TOTAL_DIST, TO_EXIT, CAN_EXIT,
+    OPPONENT_EXITED, get_exit_cells, moveable_cells, jumpable_cells, exit_dist)
 import json
 
 class State:
@@ -72,10 +73,10 @@ class State:
         if (move == MOVE or move == JUMP):
             (origin, dest) = cells
 
-            # Convert the colour of the piece being jumped over to the colour of 
-            # the piece that jumps over it. 
+            # Convert the colour of the piece being jumped over to the colour of
+            # the piece that jumps over it.
             if (move == JUMP):
-                
+
                 # The cell being jumped over
                 middle_cell = tuple(map(lambda x, y: (x + y) // 2, origin, dest))
                 for (piece_colour, pieces) in self.piece_locs.items():
@@ -115,6 +116,23 @@ class State:
             if len(pieces) > 0:
                 actives.append(colour)
         return actives
+
+    def get_feature(self, feature, colour):
+        piece_locs = self.piece_locs
+        num_of_exited = self.num_of_exited
+
+        if (feature == TOTAL_DIST):
+            return sum(exit_dist(colour, piece) + 1 for piece in piece_locs[colour])
+        if (feature == TO_EXIT):
+            to_exit = 4 - num_of_exited[colour]
+            # If there is not enough pieces, can_exit will be negative. Else, it will non-negative
+            if len(piece_locs[colour]) < to_exit:
+                to_exit = 100
+            return to_exit
+        if (feature == CAN_EXIT):
+            return len(piece_locs[colour]) - (4 - num_of_exited[colour])
+        if (feature == OPPONENT_EXITED):
+            return sum(exited for c, exited in num_of_exited.items() if c != colour and len(piece_locs[c]) > 0)
 
 def dict_to_state(dict_state):
     piece_locs = {}
