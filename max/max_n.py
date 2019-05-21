@@ -9,9 +9,12 @@ colours = ["red", "green", "blue"]
 def get_best_action(state):
     return max_n(state, 0, state.colour)[1]
 
-# Inputs: state, depth, colour of player
-# Output: (utility vector, best action)
 def max_n(state, depth, colour):
+    """
+    This function takes three arguments state, depth which used to cut off and
+    the colour of a player. Return a evaluation vector and the best action
+    regarding our evaluation function.
+    """
     if depth == max_depth:
         return (evaluate(state), (PASS, None))
 
@@ -35,6 +38,10 @@ def result(state, colour, action):
     return next_state
 
 def evaluate(state):
+    """
+    Return the evalution vector for the state.
+    """
+
     v = []
     for colour in colours:
         e = 0

@@ -97,11 +97,11 @@ class State:
         """
         Write the state to the end of file that records all the game states.
         """
-        with open('max/states.json') as json_file:
+        with open('learning_player/states.json') as json_file:
             states = json.load(json_file)
 
         states.append(self.__dict__)
-        with open('max/states.json', 'w') as json_file:
+        with open('learning_player/states.json', 'w') as json_file:
             json.dump(states, json_file)
 
     def is_over(self):
