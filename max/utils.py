@@ -4,6 +4,8 @@ JUMP = "JUMP"
 EXIT = "EXIT"
 PASS = "PASS"
 
+COLOURS = ["red", "green", "blue"]
+
 # The minimum and maximum coordinates on the q and r axes
 MIN_COORDINATE = -3
 MAX_COORDINATE = 3
@@ -78,3 +80,12 @@ def get_exit_cells(colour):
     Get a player's own exit cells.
     """
     return EXIT_CELLS[colour]
+
+def next_p(state, curr_player):
+    next_player = curr_player + 1
+    while(1):
+        next_player %= 3
+        if len(state.piece_locs[COLOURS[next_player]]) > 0:
+            break
+        next_player += 1
+    return next_player

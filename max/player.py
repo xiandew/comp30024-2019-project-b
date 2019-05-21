@@ -3,6 +3,7 @@ from max.max_n import get_best_action
 
 import math
 import random
+import time
 
 class ExpertPlayer:
     def __init__(self, colour):
@@ -10,6 +11,7 @@ class ExpertPlayer:
         Set up state representation.
         """
         self.state = State(colour)
+        self.start_time = time.time()
 
 
     def action(self):
@@ -20,6 +22,8 @@ class ExpertPlayer:
 
         if (len(possible_actions) == 0):
             return (PASS, None)
+        elif (time.time() - self.start_time) > 52:
+            return random.choice(possible_actions)
         else:
             return get_best_action(self.state)
 

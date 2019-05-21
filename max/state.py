@@ -73,3 +73,20 @@ class State:
             origin = cells
             self.piece_locs[colour].remove(origin)
             self.num_of_exited[colour] += 1
+
+    def get_in_danger(self):
+        in_danger = set()
+        occupied = self.get_all_pieces()
+        for curr_cell in self.piece_locs[self.colour]:
+            neighbours = moveable_cells(curr_cell, [])
+            for colour, pieces in self.piece_locs.items():
+                if colour != self.colour:
+                    for other_piece in pieces:
+                        # melicious pieces
+                        if other_piece in neighbours:
+                            other_q, other_r = other_piece
+                            curr_q, curr_r = curr_cell
+                            target_piece = (curr_q * 2 - other_q, curr_r * 2 - other_r)
+                            if target_piece in neighbours and (not target_piece in occupied):
+                                in_danger.add(curr_cell)
+        return len(in_danger)

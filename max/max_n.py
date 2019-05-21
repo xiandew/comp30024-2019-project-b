@@ -1,5 +1,5 @@
 from copy import deepcopy
-from max.utils import (PASS, exit_dist, EXIT_CELLS)
+from max.utils import (PASS, EXIT_CELLS, exit_dist, next_p)
 from max.state import State
 
 # max depth of looking ahead
@@ -23,9 +23,9 @@ def max_n(state, depth, colour):
     best_action = (PASS, None)
 
     curr_player = colours.index(colour)
-    next_player = (curr_player + 1) % len(colours)
+    next_player = next_p(state, curr_player)
 
-    for action in state.get_possible_actions(colour) + [(PASS, None)]:
+    for action in state.get_possible_actions(colour):
         v = max_n(result(state, colour, action), depth + 1, colours[next_player])[0]
         if v[curr_player] > v_max[curr_player]:
             v_max = v
@@ -64,11 +64,14 @@ def evaluate(state):
             # rewards the case to encourage exit action
             if ((len(set(pieces).intersection(set(EXIT_CELLS[colour]))) > 0)
                 and (len(pieces) > to_exit)):
-                e += 10000
+                e += 2500 * state.num_of_exited[colour]
 
         # penalty applied if the number of needing to exit less than the current
         # number of pieces, otherwise rewards are given.
         e += (len(pieces) - to_exit) * 100
+
+        if len(pieces) <= 4:
+            e += state.get_in_danger() * -2500
 
         v.append(e)
     return tuple(v)
